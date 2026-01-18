@@ -1,0 +1,60 @@
+<div class="container">
+  <h2>🔮 Prédire la consommation d'énergie</h2>
+  
+  <div class="upload-section">
+    <input 
+      type="file" 
+      accept=".csv" 
+      (change)="onFileSelected($event)"
+      id="fileInput"
+    />
+    <label for="fileInput" class="file-label">
+      {{ selectedFile ? selectedFile.name : 'Choisir un fichier CSV' }}
+    </label>
+    
+    <button 
+      (click)="makePredictions()" 
+      [disabled]="!selectedFile || loading"
+      class="btn-primary"
+    >
+      {{ loading ? 'Prédiction en cours...' : 'Prédire' }}
+    </button>
+  </div>
+
+  <div *ngIf="error" class="error">
+    ❌ {{ error }}
+  </div>
+
+  <div *ngIf="predictions.length > 0" class="result">
+    <h3>✅ Prédictions générées !</h3>
+    
+    <div class="stats">
+      <p><strong>Nombre de prédictions :</strong> {{ predictions.length }}</p>
+      <p><strong>Moyenne :</strong> {{ getAverage() }} kWh</p>
+      <p><strong>Min :</strong> {{ getMin() }} kWh</p>
+      <p><strong>Max :</strong> {{ getMax() }} kWh</p>
+    </div>
+
+    <button (click)="downloadPredictions()" class="btn-secondary">
+      📥 Télécharger les prédictions (CSV)
+    </button>
+
+    <div class="predictions-preview">
+      <h4>Aperçu (10 premières lignes)</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Index</th>
+            <th>Usage_kWh (Prédit)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let pred of predictions.slice(0, 10); let i = index">
+            <td>{{ i }}</td>
+            <td>{{ pred.toFixed(2) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
